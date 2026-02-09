@@ -3,8 +3,7 @@ This repository contains the code and analysis scripts for the research article 
 
 # Dependencies
 Working environment and major dependencies:
-Python 3.7
-xgboost==1.5.0
+Python 3.7  xgboost==1.5.0
 pandas==1.3.5
 numpy==1.21.6
 scipy==1.7.3
