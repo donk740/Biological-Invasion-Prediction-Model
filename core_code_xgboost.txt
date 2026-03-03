@@ -8,12 +8,9 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import statistics
 
-from pylab import mpl
-mpl.rcParams['font.sans-serif'] = ['Microsoft YaHei']
-mpl.rcParams['axes.unicode_minus'] = False  
 
 # 1. 加载数据集
-data = pd.read_csv('C:\\Users\\Administrator\\Desktop\\paper\\form\\LowFilter220shap.csv')
+data = pd.read_csv('path')
 X = data[['Elevation','MTWM','MHWM','MTDM','MHDM','AMDTR','MTWS','MHWS','MAP','MTCS','MHCS','MAT']]
 y = data['type']  # 标签
 
@@ -31,11 +28,6 @@ num_rounds = 500
 # 3. 设置10折交叉验证
 skf = StratifiedKFold(n_splits=10, shuffle=True, random_state=96)
 
-# 存储每一折的评估指标
-accuracies = []
-precisions = []
-recalls = []
-f1_scores = []
 roc_aucs = []
 
 all_y_true = []
@@ -65,7 +57,7 @@ for train_index, val_index in skf.split(X, y):
     # 存储
     roc_aucs.append(roc_auc)
     
-    # 记录所有验证集的真实值和预测值（用于整体混淆矩阵）
+    # 记录所有验证集的真实值和预测值
     all_y_true.extend(y_val_fold)
     all_y_pred.extend(y_pred_fold)
     
@@ -88,4 +80,5 @@ plt.title('Overall Confusion Matrix (10-fold CV)')
 plt.xlabel('Predicted')
 plt.ylabel('Actual')
 plt.show()
+
 
