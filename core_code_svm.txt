@@ -1,0 +1,49 @@
+import pandas as pd
+import numpy as np
+from sklearn import svm
+from sklearn.model_selection import StratifiedKFold
+from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import roc_curve, auc
+
+# 1. 加载数据集
+data = pd.read_csv('path')
+X = data[['Elevation','MTWM','MHWM','MTDM','MHDM','AMDTR','MTWS','MHWS','MAP','MTCS','MHCS','MAT']]  # 特征
+y = data['type']  # 标签
+
+# 2. 设置10折交叉验证
+skf = StratifiedKFold(n_splits=10, shuffle=True, random_state=42)
+
+# 存储每一折的AUC
+auc_scores = []
+
+fold = 1
+for train_index, test_index in skf.split(X, y):
+    print(f"\n========== Fold {fold} ==========")
+    
+    X_train_fold, X_test_fold = X.iloc[train_index], X.iloc[test_index]
+    y_train_fold, y_test_fold = y.iloc[train_index], y.iloc[test_index]
+    
+    # 数据标准化
+    scaler = StandardScaler()
+    X_train_scaled = scaler.fit_transform(X_train_fold)
+    X_test_scaled = scaler.transform(X_test_fold)
+    
+    # 创建SVM分类器
+    svm_model = svm.SVC(kernel='rbf', C=200, gamma=0.01, probability=True)
+    svm_model.fit(X_train_scaled, y_train_fold)
+    
+    # 计算AUC
+    y_score = svm_model.decision_function(X_test_scaled)
+    
+    # 计算当前折的AUC
+    fpr, tpr, _ = roc_curve(y_test_fold, y_score)
+    roc_auc = auc(fpr, tpr)
+    auc_scores.append(roc_auc)
+    
+    print(f"AUC: {roc_auc:.4f}")
+    
+    fold += 1
+
+# 3. 输出10折交叉验证结果
+print("\n========== 10折交叉验证结果 ==========")
+print(f"平均AUC: {np.mean(auc_scores):.4f} (±{np.std(auc_scores):.4f})")
