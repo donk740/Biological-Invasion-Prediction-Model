@@ -1,5 +1,5 @@
 # Biological-Invasion-Prediction-Model
-This repository contains the code and analysis scripts for the research article "Uncertainties of predicting the potential geographical distribution of species invasion by considering random errors in environmental factors".
+This repository contains the code and analysis scripts for the research article "Uncertainties of predicting the potential geographical distribution of species invasion by considering random errors in environmental factors".The machine learning model is implemented through code. The filtering processing operations in the text are carried out using geographic information software.
 
 # Dependencies
 Working environment and major dependencies:  
