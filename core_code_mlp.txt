@@ -1,0 +1,50 @@
+import shap
+from sklearn.neural_network import MLPClassifier
+import csv
+import pandas as pd
+from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import StratifiedKFold
+from sklearn.metrics import accuracy_score
+from sklearn.metrics import confusion_matrix
+from sklearn.metrics import classification_report
+from sklearn.metrics import recall_score
+from sklearn.metrics import f1_score
+from sklearn.metrics import accuracy_score
+from sklearn import metrics
+import matplotlib.pyplot as plt
+import numpy as np
+
+# 1. 加载数据集
+data = pd.read_csv('path')
+X = data[['Elevation','MTWM','MHWM','MTDM','MHDM','AMDTR','MTWS','MHWS','MAP','MTCS','MHCS','MAT']]
+y = data['type']  # 标签
+
+# 2. 设置10折交叉验证
+skf = StratifiedKFold(n_splits=10, shuffle=True, random_state=42)
+
+auc_scores = []
+
+fold = 1
+for train_index, val_index in skf.split(X, y):
+    print(f"\n========== Fold {fold} ==========")
+    
+    X_train_fold, X_val_fold = X.iloc[train_index], X.iloc[val_index]
+    y_train_fold, y_val_fold = y.iloc[train_index], y.iloc[val_index]
+    
+    # 创建MLP分类器
+    clf = MLPClassifier(solver='lbfgs', alpha=1e-5, hidden_layer_sizes=(91,14), random_state=96)
+    clf.fit(X_train_fold, y_train_fold)
+    
+    y_pred_proba = clf.predict_proba(X_val_fold)[:, 1]
+    
+    # 计算AUC
+    auc = metrics.roc_auc_score(y_val_fold, y_pred_proba)
+    auc_scores.append(auc)
+    
+    print(f"AUC: {auc:.4f}")
+    
+    fold += 1
+
+# 3. 输出10折交叉验证结果
+print("\n========== 10折交叉验证结果 ==========")
+print(f"平均AUC: {np.mean(auc_scores):.4f} (±{np.std(auc_scores):.4f})")
