@@ -39,9 +39,7 @@ for train_index, test_index in skf.split(X, y):
     fpr, tpr, _ = roc_curve(y_test_fold, y_score)
     roc_auc = auc(fpr, tpr)
     auc_scores.append(roc_auc)
-    
     print(f"AUC: {roc_auc:.4f}")
-    
     fold += 1
 
 # 3. 输出10折交叉验证结果
