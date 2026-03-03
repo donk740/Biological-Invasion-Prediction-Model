@@ -8,7 +8,6 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import statistics
 
-
 # 1. 加载数据集
 data = pd.read_csv('path')
 X = data[['Elevation','MTWM','MHWM','MTDM','MHDM','AMDTR','MTWS','MHWS','MAP','MTCS','MHCS','MAT']]
@@ -27,7 +26,6 @@ num_rounds = 500
 
 # 3. 设置10折交叉验证
 skf = StratifiedKFold(n_splits=10, shuffle=True, random_state=96)
-
 roc_aucs = []
 
 all_y_true = []
@@ -63,7 +61,6 @@ for train_index, val_index in skf.split(X, y):
     
     # 打印当前fold的指标
     print(f"ROC AUC:   {roc_auc:.4f}")
-    
     fold += 1
 
 # 4. 计算所有fold的平均值和标准差
@@ -80,5 +77,6 @@ plt.title('Overall Confusion Matrix (10-fold CV)')
 plt.xlabel('Predicted')
 plt.ylabel('Actual')
 plt.show()
+
 
 
